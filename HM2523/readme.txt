@@ -1,6 +1,6 @@
 MediaTek LinkIt(TM) Development Platform for RTOS provides a comprehensive software solution for devices based
 on the MT76x7 and MT2523x SOCs.
-
+//wells delte
 1. Getting started
    The SDK package supports GCC, Keil, and IAR tool chains. Follow the instructions at <sdk_root>/doc/LinkIt_for_RTOS_Get_Started_Guide.pdf
    to build your first project and run it on the HDK. Release notes are also under the <sdk_root>/doc folder.
