@@ -122,5 +122,7 @@ extern void gnss_demo_app_stop(void);
 
 extern void gnss_demo_app_destroy(TaskHandle_t task_handler);
 
+void init_gnss_data();
+
 #endif
 

@@ -42,7 +42,7 @@
 
 #ifdef CONFIG_INCLUD_BODY
 // add your screen here
-{show_gnss_screen, gnss_event_handler, "GNSS demo"},
+//{show_gnss_screen, gnss_event_handler, "GNSS demo"},
 {show_bt_audio_screen, bt_audio_event_handler, "BT Audio"},
 {ble_pxp_show_unconnected_screen, ble_pxp_screen_event_handler, "BLE PXP"},
 #ifdef SENSOR_DEMO

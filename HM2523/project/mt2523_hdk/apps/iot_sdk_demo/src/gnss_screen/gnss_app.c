@@ -114,8 +114,9 @@ typedef struct {
     int32_t periodic_timer_id;
     gnss_location_mode_t mode;
 } gnss_context_struct_t;
+int32_t rx_data_ready = 1;
 
-
+static TaskHandle_t gnss_app_task_handle;
 static gnss_context_struct_t g_gnss_location_context;
 extern void epo_demo_send_assistance_data(int iYr, int iMo, int iDay, int iHr);
 /**
@@ -461,6 +462,7 @@ static void gnss_driver_callback_func(gnss_notification_type_t type, void *param
 {
     gnss_message_struct_t gnss_message;
     BaseType_t xHigherPriorityTaskWoken;
+	GNSSLOGD("==wells======time========callback===== %d " + type);
     switch (type) {
         case GNSS_NOTIFICATION_TYPE_POWER_ON_CNF:
             // If any error when power on, you can send error msg here.
@@ -493,6 +495,26 @@ static void gnss_timer_expiry_notify(void)
     xQueueSendFromISR(gnss_task_cntx.gnss_task_queue, ( void * ) &gnss_message, 0);
 }
 
+static void send_gnss_commnd(void)
+  {
+     int32_t ret;
+     int8_t buf[256];
+     int32_t send_len = 0;
+     uint8_t command[] = "$PMTK220,200*2C\r\n";
+	 if(rx_data_ready)
+	 {
+		send_len += gnss_send_command(command + send_len, strlen(command) - send_len);
+		if (send_len == strlen(command))
+		{
+			rx_data_ready = 0;
+		}
+		else
+	    {
+		    rx_data_ready = 1;
+	    }
+	}
+ }
+
 
 /**
 * @brief Process GNSS message
@@ -510,7 +532,7 @@ static void gnss_task_msg_handler(gnss_message_struct_t *message)
     switch (message->message_id) {
         case GNSS_ENUM_POWER_ON_REQ:
             
-            GNSSLOGD("GNSS_ENUM_POWER_ON_REQ:%d\n", g_gnss_location_context.config.periodic);
+            GNSSLOGD("==wells===GNSS_ENUM_POWER_ON_REQ:%d\n", g_gnss_location_context.config.periodic);
             
             if (g_gnss_location_context.config.periodic >= GNSS_LOW_POWER_MODE_ON_OFF) {
                 g_gnss_location_context.mode = GNSS_LOCATION_MODE_ON_OFF;
@@ -526,9 +548,10 @@ static void gnss_task_msg_handler(gnss_message_struct_t *message)
                     g_gnss_location_context.mode = GNSS_LOCATION_MODE_LLE;
                 }
                 gnss_power_on();
+				gnss_send_command((int8_t*)"$PMTK220,200*2C\r\n", strlen("$PMTK220,200*2C\r\n"));
             }
             if (g_gnss_location_context.mode != GNSS_LOCATION_MODE_NONE_PERIODIC) {
-                g_gnss_location_context.periodic_timer_id = gnss_start_repeat_timer(g_gnss_location_context.config.periodic * 1000, gnss_periodic_timer_handle_func);
+                g_gnss_location_context.periodic_timer_id = gnss_start_repeat_timer(200, gnss_periodic_timer_handle_func);
             }
             is_power_on = 1;
             break;
@@ -582,6 +605,7 @@ static void gnss_task_msg_handler(gnss_message_struct_t *message)
             break;
         case GNSS_ENUM_READY_TO_READ:
             gnss_recieve_data();
+			send_gnss_commnd();
             break;
         case GNSS_ENUM_READY_TO_WRITE:
             // currently no use, because the data send is blocking api.
@@ -642,7 +666,7 @@ TaskHandle_t gnss_demo_app_create()
 {
     TaskHandle_t task_handler;
 	BaseType_t ret;
-    GNSSLOGD("gnss_demo_app_create\n");
+    GNSSLOGD("===wells===gnss_demo_app_create\n");
     gnss_task_init();
 	gnss_task_cntx.gnss_task_queue = xQueueCreate( GNSS_QUEUE_SIZE, sizeof( gnss_message_struct_t ) );
     ret = xTaskCreate((TaskFunction_t) gnss_task_main, 
@@ -678,7 +702,7 @@ void gnss_demo_app_config(int32_t periodic, gnss_location_handle handle)
 void gnss_demo_app_start()
 {
     // send power gnss msg to gnss task.
-    GNSSLOGD("gnss_demo_app_start\n");
+    GNSSLOGD("wells--------gnss_demo_app_start\n");
     gnss_message_struct_t gnss_message;
     gnss_message.message_id = GNSS_ENUM_POWER_ON_REQ;
     xQueueSend(gnss_task_cntx.gnss_task_queue, &gnss_message, 0);
@@ -712,4 +736,26 @@ void gnss_demo_app_send_cmd(int8_t* buf, int32_t buf_len)
 {
 	gnss_app_send_cmd_by_other_task(buf, buf_len);
 }
+
+void gnss_app_location_handle(gnss_location_handle_type_t type, void* param)
+{
+    if (type == GNSS_LOCATION_HANDLE_TYPE_ERROR) {
+        GNSSLOGD("==wells===[GNSS Demo] location handle error! type: %d\n", (int)param);
+    } else {
+        gnss_location_struct_t *location = (gnss_location_struct_t *)param;
+        GNSSLOGD("==wells===[GNSS Demo] App Get Location, latitude:%s, longitude:%s, accuracy:%d\n", location->latitude, location->longitude, (int)location->accuracy);
+        gnss_update_data(&location->nmea_sentence);
+        //ui_send_event(MESSAGE_ID_GNSS_NMEA, 0, 0);
+    }
+}
+
+
+void init_gnss_data()
+{
+	int32_t periodic = 1;
+    gnss_app_task_handle = gnss_demo_app_create();
+    gnss_demo_app_config(periodic, gnss_app_location_handle);
+    gnss_demo_app_start();
+}
+
 

@@ -122,14 +122,14 @@ extern void ble_app_task(void *arg);
 extern void bt_task(void * arg);
 
 static const tasks_list_t tasks_list[] = {
-    { bt_task,              BT_TASK_NAME,           BT_TASK_STACKSIZE/((uint32_t)sizeof( StackType_t )),     NULL,    BT_TASK_PRIORITY},
+   // { bt_task,              BT_TASK_NAME,           BT_TASK_STACKSIZE/((uint32_t)sizeof( StackType_t )),     NULL,    BT_TASK_PRIORITY},
 #ifdef ATCI_DEMO
-    { atci_def_task,        ATCI_TASK_NAME,         ATCI_TASK_STACKSIZE/(( uint32_t )sizeof( StackType_t )),     NULL,   ATCI_TASK_PRIO },
+  //  { atci_def_task,        ATCI_TASK_NAME,         ATCI_TASK_STACKSIZE/(( uint32_t )sizeof( StackType_t )),     NULL,   ATCI_TASK_PRIO },
 #endif
 
     { ui_task_main,         DEMO_UI_TASK_NAME,      DEMO_UI_TASK_STACK_SIZE/(( uint32_t )sizeof( StackType_t )),     NULL,   TASK_PRIORITY_NORMAL },
 #ifdef BLE_PXP_DEMO
-    { ble_app_task,         "ble_app_task", 512,     NULL,   1 },
+  //  { ble_app_task,         "ble_app_task", 512,     NULL,   1 },
 #endif
 
 #ifdef WATCH_APP_DEMO
@@ -137,9 +137,9 @@ static const tasks_list_t tasks_list[] = {
 #endif
 
 #ifdef BT_SINK_DEMO
-    { bsp_bt_codec_task_main,    BT_CODEC_TASK_NAME,     BT_CODEC_TASK_STACKSIZE/(( uint32_t )sizeof( StackType_t )),    NULL,   BT_CODEC_TASK_PRIO },
-    { am_task_main,          AM_TASK_NAME,           AM_TASK_STACKSIZE/(( uint32_t )sizeof( StackType_t )),     NULL,   AM_TASK_PRIO },
-    { bt_sink_app_task_main, BT_SINK_APP_TASK_NAME,  BT_SINK_APP_TASK_STACKSIZE/(( uint32_t )sizeof( StackType_t )),    NULL,   BT_SINK_APP_TASK_PRIO },
+  //  { bsp_bt_codec_task_main,    BT_CODEC_TASK_NAME,     BT_CODEC_TASK_STACKSIZE/(( uint32_t )sizeof( StackType_t )),    NULL,   BT_CODEC_TASK_PRIO },
+ //   { am_task_main,          AM_TASK_NAME,           AM_TASK_STACKSIZE/(( uint32_t )sizeof( StackType_t )),     NULL,   AM_TASK_PRIO },
+  //  { bt_sink_app_task_main, BT_SINK_APP_TASK_NAME,  BT_SINK_APP_TASK_STACKSIZE/(( uint32_t )sizeof( StackType_t )),    NULL,   BT_SINK_APP_TASK_PRIO },
 #endif
 
 };
