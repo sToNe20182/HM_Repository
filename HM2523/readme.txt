@@ -25,3 +25,4 @@ on the MT76x7 and MT2523x SOCs.
                             ->  extract the tool package to the root folder of the SDK with the following command.
                             ->       7za x SDK_VX.Y.Z_tool_chain.7z -o<sdk_root>
                             **  Please make sure you have /tools/gcc before you build the SDK under linux environment. **
+test 
