@@ -342,7 +342,7 @@ static void syslog_port_service_init(void)
     serial_port_setting_uart_t uart_setting;
 
     if (serial_port_config_read_dev_number("syslog", &syslog_port) != SERIAL_PORT_STATUS_OK) {
-        syslog_port = SERIAL_PORT_DEV_UART_2;
+        syslog_port = SERIAL_PORT_DEV_UART_0;
         serial_port_config_write_dev_number("syslog", syslog_port);
         uart_setting.baudrate = HAL_UART_BAUDRATE_115200;
         serial_port_config_write_dev_setting(syslog_port, (serial_port_dev_setting_t *)&uart_setting);

@@ -744,7 +744,7 @@ void gnss_app_location_handle(gnss_location_handle_type_t type, void* param)
     } else {
         gnss_location_struct_t *location = (gnss_location_struct_t *)param;
         GNSSLOGD("==wells===[GNSS Demo] App Get Location, latitude:%s, longitude:%s, accuracy:%d\n", location->latitude, location->longitude, (int)location->accuracy);
-        gnss_update_data(&location->nmea_sentence);
+       // gnss_update_data(&location->nmea_sentence);
         //ui_send_event(MESSAGE_ID_GNSS_NMEA, 0, 0);
     }
 }
