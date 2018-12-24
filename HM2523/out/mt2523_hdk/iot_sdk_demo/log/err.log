@@ -1,0 +1,2 @@
+make: Warning: File '/mnt/hgfs/VM_Share/HM_Repository/HM2523/out/mt2523_hdk/iot_sdk_demo/obj/driver/board/component/mems/src/bmi160.d' has modification time 1.1 s in the future
+make: warning:  Clock skew detected.  Your build may be incomplete.

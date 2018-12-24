@@ -1285,13 +1285,36 @@ int32_t gyro_operate(void *self, uint32_t command, void *buff_out, int32_t size_
 
 /*----------------------------------------------------------------------------*/
 /* acc + gyro sensor init */
+
+int Convert_Acc_Data(uint8_t High,uint8_t Low)
+{
+	int16_t Temp=0;
+			 
+	if(High>0x7F)	   //High×î¸ßÎ»Îª1¡ª¡ª¼ÓËÙ¶ÈÖµÎª¸ºÖµ	
+    {
+	   Temp = High*256+Low;
+	   Temp = Temp-1;
+	   Temp =~Temp;
+	   Temp = Temp>>4;
+	   Temp = 0-Temp; //»úÆ÷ÖÐ¸ºÊýÒÔ²¹Âë±íÊ¾¡ª¡ª½«²¹Âë±íÊ¾ÎªÔ­Âë
+	}
+	else
+    {
+   	   Temp=High*256+Low;
+       Temp=Temp>>4;
+    }
+	
+    return Temp;	 
+} 
+
+
 void ags_init(void)
 {
     sensor_driver_object_t obj_acc, obj_gyro;
-    uint8_t receive[2] = {0};
+    uint8_t receive[6] = {0};
 
     /* Soft reset */
-    bmi160_SPI_write(BMI160_CMD_COMMANDS_ADDR, CMD_SOFTRESET);
+    //bmi160_SPI_write(BMI160_CMD_COMMANDS_ADDR, CMD_SOFTRESET);
 
     /* Structure initialization */
     t_bmi160.enabled_sensors = 0;
@@ -1313,18 +1336,76 @@ void ags_init(void)
     t_bmi160.prev_acc_mcu_time_ms = 0;
     t_bmi160.prev_gyro_mcu_time_ms = 0;
 
-    int fail_cout = 0;
-    while (receive[0] != t_bmi160.chip_id) {
+    int Acc_Get_Flag = 0,Gyr_Get_Flag = 0,Config_flag = 0;
+	int AccX_L,AccX_H,AccY_L,AccY_H,AccZ_L,AccZ_H,AccX_M,AccY_M,AccZ_M;
+
+	//receive[0] != t_bmi160.chip_id
+	
+    while (1) {
         /* read Chip Id */
         bmi160_SPI_read(BMI160_USER_CHIP_ID_ADDR, receive);
-        LOGI("chip id == 0x%X\n", receive[0]);
-        if (receive[0] == t_bmi160.chip_id) {
-            break;
-        }
+        //LOGI("chip id == 0x%X\n", receive[0]);
+	
+		if ((receive[0] == t_bmi160.chip_id) && !Config_flag) 
+		{
+			bmi160_SPI_write(0x7E, 0x11);
+			bmi160_SPI_write(0x7E, 0x15);
+			bmi160_SPI_write(0x40, 0x27);
+			
+			do{
+				bmi160_SPI_write(0x41, 0x03);
+				bmi160_SPI_read(0xc1, receive);
+				LOGI("ACC_GET == 0x%X\n", receive[0]);
+				if(receive[0] == 0x03)
+					Acc_Get_Flag = 1;
+				mt_device_usleep(1000);
+			}while(receive[0] != 0x03);	
+
+			bmi160_SPI_write(0x42, 0x27);
+
+			receive[0] = 0;
+			
+			do{
+				bmi160_SPI_write(0x43, 0x03);
+				bmi160_SPI_read(0xc3, receive);
+				LOGI("GYR_GET == 0x%X\n", receive[0]);
+				if(receive[0] == 0x03)
+					Gyr_Get_Flag = 1;
+				mt_device_usleep(1000);
+			}while(receive[0] != 0x03);	
+
+			Config_flag = 1;
+		}
+
+		if(Acc_Get_Flag && Gyr_Get_Flag)
+		{
+			bmi160_SPI_read(0x12,receive);
+			AccX_L = receive[0];receive[0] = 0;
+			bmi160_SPI_read(0x13,receive);
+			AccX_H = receive[0];receive[0] = 0;
+			bmi160_SPI_read(0x14,receive);
+			AccY_L = receive[0];receive[0] = 0;
+			bmi160_SPI_read(0x15,receive);
+			AccY_H = receive[0];receive[0] = 0;
+			bmi160_SPI_read(0x16,receive);
+			AccZ_L = receive[0];receive[0] = 0;
+			bmi160_SPI_read(0x17,receive);
+			AccZ_H = receive[0];receive[0] = 0;
+
+			AccX_M = Convert_Acc_Data(AccX_H,AccX_L);
+			AccY_M = Convert_Acc_Data(AccY_H,AccY_L);
+			AccZ_M = Convert_Acc_Data(AccZ_H,AccZ_L);
+			
+			LOGI("!!!!!!!!!!!!!!!!!ACCX:%d:::::ACCY:%d:::::ACCZ:%d!!!!!!!!!!!!!!!!",AccX_M,AccY_M,AccZ_M);
+		}
+
+		vTaskDelay(200);
+		/*
         fail_cout++;
         if(fail_cout > 5) {
             return;
         }
+        */
         mt_device_usleep(1000);
     }
 

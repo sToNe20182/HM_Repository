@@ -201,8 +201,8 @@ void bsp_sensor_peripheral_init(void)
     spi_config.clock_frequency = 0x400000;
     spi_config.slave_port = HAL_SPI_MASTER_SLAVE_1;
     spi_config.bit_order = HAL_SPI_MASTER_MSB_FIRST;
-    spi_config.polarity = HAL_SPI_MASTER_CLOCK_POLARITY0;
-    spi_config.phase = HAL_SPI_MASTER_CLOCK_PHASE0;
+    spi_config.polarity = HAL_SPI_MASTER_CLOCK_POLARITY1;
+    spi_config.phase = HAL_SPI_MASTER_CLOCK_PHASE1;
 
     mems_spi_init(SPI_SELECT_BMI160, HAL_SPI_MASTER_3, &spi_config, HAL_SPI_MASTER_MACRO_GROUP_A);
 

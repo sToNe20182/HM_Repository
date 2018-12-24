@@ -462,7 +462,7 @@ static void gnss_driver_callback_func(gnss_notification_type_t type, void *param
 {
     gnss_message_struct_t gnss_message;
     BaseType_t xHigherPriorityTaskWoken;
-	GNSSLOGD("==wells======time========callback===== %d " + type);
+	//GNSSLOGD("==wells======time========callback===== %d " + type);
     switch (type) {
         case GNSS_NOTIFICATION_TYPE_POWER_ON_CNF:
             // If any error when power on, you can send error msg here.
@@ -740,10 +740,10 @@ void gnss_demo_app_send_cmd(int8_t* buf, int32_t buf_len)
 void gnss_app_location_handle(gnss_location_handle_type_t type, void* param)
 {
     if (type == GNSS_LOCATION_HANDLE_TYPE_ERROR) {
-        GNSSLOGD("==wells===[GNSS Demo] location handle error! type: %d\n", (int)param);
+      //  GNSSLOGD("==wells===[GNSS Demo] location handle error! type: %d\n", (int)param);
     } else {
         gnss_location_struct_t *location = (gnss_location_struct_t *)param;
-        GNSSLOGD("==wells===[GNSS Demo] App Get Location, latitude:%s, longitude:%s, accuracy:%d\n", location->latitude, location->longitude, (int)location->accuracy);
+        //GNSSLOGD("==wells===[GNSS Demo] App Get Location, latitude:%s, longitude:%s, accuracy:%d\n", location->latitude, location->longitude, (int)location->accuracy);
        // gnss_update_data(&location->nmea_sentence);
         //ui_send_event(MESSAGE_ID_GNSS_NMEA, 0, 0);
     }
