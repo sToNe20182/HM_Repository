@@ -210,6 +210,12 @@ typedef enum {
 #define USB_QUEUE_LENGTH  500
 #endif
 
+/*fusion alg task definition */
+#define FUSION_ALG_MANAGER_TASK_NAME         "fusion_alg_manager"
+#define FUSION_ALG_MANAGER_TASK_STACKSIZE    (2048)
+#define FUSION_ALG_MANAGER_TASK_PRIO         TASK_PRIORITY_NORMAL
+
+
 /*****************************************************************************
  * API Functions
  *****************************************************************************/

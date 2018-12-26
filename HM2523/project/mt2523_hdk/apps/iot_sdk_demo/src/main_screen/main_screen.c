@@ -45,6 +45,7 @@
 #include "bsp_lcd.h"
 #include "mt25x3_hdk_backlight.h"
 #include "gnss_app.h"
+#include "fusion_alg_interface_api.h"
 #define CONFIG_INCLUDE_HEADER
 #include "screen_config.h"
 #undef CONFIG_INCLUDE_HEADER
@@ -495,7 +496,9 @@ void show_main_screen()
     static int32_t is_init;
     curr_event_handler = main_screen_event_handle;
     demo_ui_register_touch_event_callback(main_screen_pen_event_handler, NULL);
+	fusion_alg_manager_init();
     init_gnss_data();
+	init_fusion_alg_data();
     if (!is_init) {
         is_init = 1;
         bsp_lcd_init(0xF800);

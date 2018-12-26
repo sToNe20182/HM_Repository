@@ -117,6 +117,7 @@ typedef struct {
 
 static gnss_location_callback_f g_disp_callback;
 gnss_context_struct_t g_gnss_location_context;
+static GNSSData g_GNSSData;
 extern void epo_demo_send_assistance_data(int iYr, int iMo, int iDay, int iHr);
 
 void gnss_register_callback(gnss_location_callback_f call_back)

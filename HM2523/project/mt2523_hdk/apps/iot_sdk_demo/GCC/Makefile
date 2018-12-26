@@ -69,6 +69,7 @@ OUTPATH = $(PWD)/Build
 include $(SOURCE_DIR)/kernel/rtos/FreeRTOS/module.mk
 
 include main_screen.mk
+include fusion_alg.mk
 # gdi module
 include $(SOURCE_DIR)/middleware/MTK/gdi/module.mk
 
