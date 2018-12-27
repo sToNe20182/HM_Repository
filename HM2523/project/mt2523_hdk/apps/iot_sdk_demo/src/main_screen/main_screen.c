@@ -498,7 +498,6 @@ void show_main_screen()
     demo_ui_register_touch_event_callback(main_screen_pen_event_handler, NULL);
 	fusion_alg_manager_init();
     init_gnss_data();
-	init_fusion_alg_data();
     if (!is_init) {
         is_init = 1;
         bsp_lcd_init(0xF800);
@@ -514,5 +513,6 @@ void show_main_screen()
     
     GRAPHICLOG("show_main_screen");
     main_screen_draw();
+	init_fusion_alg_data();
 }
 

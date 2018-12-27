@@ -35,11 +35,11 @@ static void raw_data_process_msg_handler(fusion_alg_msg_struct_t *message)
     {
         case MESSAGE_ID_RAW_SENSOR_DATA:
             //inject_raw_sensor_data((raw_sensor_data*) message->param2);
-            GRAPHICLOG("===========wells==========MESSAGE_ID_RAW_SENSOR_DATA");
+            printf("===========wells==========MESSAGE_ID_RAW_SENSOR_DATA");
             break;
 		case MESSAGE_ID_RAW_GPS_DATA:
 			//inject_raw_gps_data((raw_sensor_data*) message->param2);
-			 GRAPHICLOG("===========wells==========MESSAGE_ID_RAW_GPS_DATA");
+			 printf("===========wells==========MESSAGE_ID_RAW_GPS_DATA");
 			break;
         default :
             break;

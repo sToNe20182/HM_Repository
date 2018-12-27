@@ -103,7 +103,7 @@ typedef struct
 
 
 
-void inject_sensor_data(const RawSensorData *sensorData);  
+void inject_sensor_data();  
 void inject_location_data(const GNSSData *gnssData);
 void init_fusion_alg_data();
 
